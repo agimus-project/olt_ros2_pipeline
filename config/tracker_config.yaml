@@ -1,0 +1,53 @@
+---
+/**:
+  # Timing and frames configuration
+  compensate_camera_motion: true
+  camera_motion_stationary_frame_id: world
+  detection_to_image_time_slop: 10.0
+  # Tracker configuration
+  optimizer.tikhonov_parameter_rotation: 500.0
+  optimizer.tikhonov_parameter_translation: 20000.0
+
+  region_modality.model_occlusion: true
+  region_modality.learning_rate_f: 0.5
+  region_modality.learning_rate_b: 0.5
+
+  use_texture_modality: true
+  use_depth: true
+  # Tracked objects configuration
+  tracked_objects:
+  - tless-obj_000001
+  - tless-obj_000002
+  - tless-obj_000003
+  - tless-obj_000004
+  - tless-obj_000005
+  - tless-obj_000006
+  - tless-obj_000007
+  - tless-obj_000008
+  - tless-obj_000009
+  - tless-obj_000010
+  - tless-obj_000011
+  - tless-obj_000012
+  - tless-obj_000013
+  - tless-obj_000014
+  - tless-obj_000015
+  - tless-obj_000016
+  - tless-obj_000017
+  - tless-obj_000018
+  - tless-obj_000019
+  - tless-obj_000020
+  - tless-obj_000021
+  - tless-obj_000022
+  - tless-obj_000023
+  - tless-obj_000024
+  - tless-obj_000025
+  - tless-obj_000026
+  - tless-obj_000027
+  - tless-obj_000028
+  - tless-obj_000029
+  - tless-obj_000030
+
+  tless-obj_000026.max_instances: 2
+  tless-obj_000001.max_instances: 5
+  tless-obj_000021.max_instances: 5
+  tless-obj_000023.max_instances: 5

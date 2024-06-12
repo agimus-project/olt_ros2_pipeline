@@ -13,8 +13,9 @@
   <url type="repository">https://gitlab.laas.fr/kwojciecho/m3t_tracker_ros</url>
 
   <exec_depend>m3t_tracker_ros</exec_depend>
-  <!-- <exec_depend>happypose_ros</exec_depend> -->
+  <exec_depend>happypose_ros</exec_depend>
   <exec_depend>happypose_marker_publisher</exec_depend>
+  <exec_depend>realsense2_camera</exec_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>message_filters</exec_depend>
   <exec_depend>pinocchio</exec_depend>
