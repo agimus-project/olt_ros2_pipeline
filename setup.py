@@ -43,7 +43,7 @@ setup(
     entry_points={
         "console_scripts": [
             "composed_tracker = olt_ros2_pipeline.composed_tracker:main",
-            "keyboard_monitor = olt_ros2_pipeline.keyboard_monitor:main",
+            "happypose_labeler = olt_ros2_pipeline.happypose_labeler:main",
             "detection_pose_filter = olt_ros2_pipeline.detection_pose_filter:main",
         ],
     },
