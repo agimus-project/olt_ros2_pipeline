@@ -1,0 +1,55 @@
+---
+detection_filter:
+  buffer_size:
+    min:
+      type: int
+      default_value: 5
+      description: Minimum size of an a buffer of poses, used to determine stability of predicted
+        poses.
+      validation:
+        gt_eq<>: 2
+    max:
+      type: int
+      default_value: 5
+      description: Maximum size of an a buffer of poses, used to determine stability of predicted
+        poses.
+      validation:
+        gt_eq<>: 2
+
+  alpha_t:
+    type: double
+    default_value: 0.5
+    description: First order filter coefficient for translation pose.
+    validation:
+      bounds<>: [0.0, 1.0]
+
+  alpha_o:
+    type: double
+    default_value: 0.5
+    description: First order filter coefficient for translation rotation.
+    validation:
+      bounds<>: [0.0, 1.0]
+
+  max_delta_angle:
+    type: double
+    default_value: 0.0
+    description: Maximum relative angle [rad] between consecutive poses, used to discard new
+      pose.
+    validation:
+      gt<>: 0.0
+
+  max_delta_distance:
+    type: double
+    default_value: 0.0
+    description: Maximum relative distance [m] between consecutive poses, used to discard
+      new pose.
+    validation:
+      gt<>: 0.0
+
+  oldest_valid_pose:
+    type: double
+    default_value: 1.0
+    description: Maximum time difference between latest received pose and the oldest pose
+      used as a rollback.
+    validation:
+      gt<>: 0.0

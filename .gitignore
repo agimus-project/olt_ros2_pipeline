@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Linter cache
+.ruff_cache
+
+# Colcon custom files
+COLCON_IGNORE
+AMENT_IGNORE
+
+# VS Code
+.vscode
+
+# Generated ROS parameters
+# The file has to be manually modified as the code generations has a bug in __map
+m3t_tracker_ros/m3t_tracker_ros/m3t_tracker_ros_parameters.py
+m3t_tracker_ros/test/__pycache__
