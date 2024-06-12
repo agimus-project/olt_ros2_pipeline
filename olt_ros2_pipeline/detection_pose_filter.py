@@ -2,9 +2,14 @@ import numpy as np
 import pinocchio as pin
 
 import rclpy
+from rclpy.time import Time
 from rclpy.node import Node
 
 from message_filters import ApproximateTimeSynchronizer, Subscriber
+
+from tf2_ros.buffer import Buffer
+from tf2_ros.transform_listener import TransformListener
+from tf2_geometry_msgs import do_transform_pose
 
 from geometry_msgs.msg import Point, Pose, Quaternion
 from vision_msgs.msg import Detection2DArray, VisionInfo
@@ -38,6 +43,10 @@ class DetectionPoseFilter(Node):
 
         # dict[str, TranslationFilter]
         self._filtered_tracks = {}
+
+        # Transform buffers
+        self._buffer = Buffer()
+        self._listener = TransformListener(self._buffer, self)
 
         # Detections subscribers
         detection_approx_time_sync = ApproximateTimeSynchronizer(
@@ -90,7 +99,7 @@ class DetectionPoseFilter(Node):
         # Create new output list of detections
         filtered_detections = Detection2DArray()
         filtered_detections.header.stamp = self.get_clock().now().to_msg()
-        filtered_detections.header.frame_id = detections.header.frame_id
+        filtered_detections.header.frame_id = self._params.frame_id
 
         # Add postfix to the method
         vision_info.method += "-smoothed"
@@ -109,8 +118,14 @@ class DetectionPoseFilter(Node):
                     f"New track registered with id: '{detection.id}'"
                 )
 
+            transform = self._buffer.lookup_transform(
+                detection.header.frame_id,
+                self._params.frame_id,
+                Time.from_msg(detection.header.stamp),
+            )
+            # Transform pose to a static frame
+            p = do_transform_pose(detection.results[0].pose.pose, transform)
             # Convert ROS message for the pinocchio SE3
-            p = detection.results[0].pose.pose
             pose = pin.XYZQUATToSE3(
                 np.array(
                     [
@@ -139,6 +154,7 @@ class DetectionPoseFilter(Node):
 
             # Recover ROS message from pinocchio type
             filtered_detection = detection
+            filtered_detection.header.frame_if = self._params.frame_id
             pose_vec = pin.SE3ToXYZQUAT(filtered)
             filtered_detection.results[0].pose.pose = Pose(
                 position=Point(**dict(zip("xyz", pose_vec[:3]))),

@@ -1,5 +1,12 @@
 ---
 detection_pose_filter:
+  frame_id:
+    type: str
+    default: world
+    description: Stationary frame in which object poses are filtered.
+    validation:
+      not_empty<>: []
+
   buffer_size:
     min:
       type: int
