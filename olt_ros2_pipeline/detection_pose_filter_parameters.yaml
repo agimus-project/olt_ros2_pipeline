@@ -1,8 +1,8 @@
 ---
 detection_pose_filter:
   frame_id:
-    type: str
-    default: world
+    type: string
+    default_value: world
     description: Stationary frame in which object poses are filtered.
     validation:
       not_empty<>: []
