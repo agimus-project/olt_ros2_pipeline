@@ -87,7 +87,6 @@ def launch_setup(
         Node(
             package="happypose_marker_publisher",
             executable="marker_publisher",
-            name=node_name,
             namespace=namespace,
             output="screen",
             parameters=[
@@ -102,11 +101,7 @@ def launch_setup(
                 }
             ],
         )
-        for node_name, namespace in [
-            ("happypose_marker_publisher", "happypose"),
-            ("real_time_tracker_node", "m3t_tracker"),
-            ("filtered", "m3t_tracker/filtered"),
-        ]
+        for namespace in ["happypose", "m3t_tracker", "m3t_tracker/filtered"]
     ]
 
     # Start RViz2 ROS node
@@ -118,9 +113,9 @@ def launch_setup(
             "-d",
             PathJoinSubstitution(
                 [
-                    FindPackageShare("m3t_tracker_examples"),
+                    FindPackageShare("olt_ros2_pipeline"),
                     "rviz",
-                    "rosbag_example.rviz",
+                    "olt_ros2.rviz",
                 ]
             ),
         ],

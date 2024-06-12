@@ -32,7 +32,7 @@ detection_pose_filter:
 
   max_delta_angle:
     type: double
-    default_value: 0.0
+    default_value: 0.1
     description: Maximum relative angle [rad] between consecutive poses, used to discard new
       pose.
     validation:
@@ -40,16 +40,8 @@ detection_pose_filter:
 
   max_delta_distance:
     type: double
-    default_value: 0.0
+    default_value: 0.1
     description: Maximum relative distance [m] between consecutive poses, used to discard
       new pose.
-    validation:
-      gt<>: 0.0
-
-  oldest_valid_pose:
-    type: double
-    default_value: 1.0
-    description: Maximum time difference between latest received pose and the oldest pose
-      used as a rollback.
     validation:
       gt<>: 0.0

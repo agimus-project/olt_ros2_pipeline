@@ -1,5 +1,5 @@
 ---
-/happypose_ros:
+/**:
   ros__parameters:
     device: cuda:0
     visualization.publish_markers: false
