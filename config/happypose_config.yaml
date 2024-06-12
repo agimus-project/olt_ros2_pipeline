@@ -1,13 +1,13 @@
 ---
 /**:
   ros__parameters:
-    device: cuda:0
+    device: cpu
     visualization.publish_markers: false
     verbose_info_logs: true
 
     pose_estimator_type: cosypose
     cosypose:
-      dataset_name: ycbv
+      dataset_name: $(var dataset_name)
       renderer:
         renderer_type: panda3d
         n_workers: 8
@@ -19,8 +19,8 @@
           n_coarse_iterations: 1
           n_refiner_iterations: 3
         labels_to_keep:
-        - ycbv-obj_000002
-        - ycbv-obj_000005
+        - $(var dataset_name)-obj_000002
+        - $(var dataset_name)-obj_000005
     camera_names: [cam_1]
     cameras:
       timeout: 0.1
