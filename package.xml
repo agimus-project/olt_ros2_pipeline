@@ -8,9 +8,9 @@
   <maintainer email="guilhem.saurel@laas.fr">Guilhem Saurel</maintainer>
   <license>BSD</license>
 
-  <url type="website">https://gitlab.laas.fr/kwojciecho/m3t_tracker_ros</url>
-  <url type="bugtracker">https://gitlab.laas.fr/kwojciecho/m3t_tracker_ros/-/issues</url>
-  <url type="repository">https://gitlab.laas.fr/kwojciecho/m3t_tracker_ros</url>
+  <url type="website">https://gitlab.laas.fr/kwojciecho/olt_ros2_pipeline</url>
+  <url type="bugtracker">https://gitlab.laas.fr/kwojciecho/olt_ros2_pipeline/-/issues</url>
+  <url type="repository">https://gitlab.laas.fr/kwojciecho/olt_ros2_pipeline</url>
 
   <exec_depend>m3t_tracker_ros</exec_depend>
   <exec_depend>happypose_ros</exec_depend>
