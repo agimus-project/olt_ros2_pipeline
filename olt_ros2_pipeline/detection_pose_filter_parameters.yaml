@@ -32,11 +32,11 @@ detection_pose_filter:
 
   max_delta_angle:
     type: double
-    default_value: 0.1
+    default_value: 0.2
     description: Maximum relative angle [rad] between consecutive poses, used to discard new
       pose.
     validation:
-      gt<>: 0.0
+      bounds<>: [0.0, 3.14]
 
   max_delta_distance:
     type: double

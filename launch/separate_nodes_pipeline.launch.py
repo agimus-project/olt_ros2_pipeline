@@ -97,11 +97,15 @@ def launch_setup(
                     "mesh.use_vision_info_uri": False,
                     "mesh.uri": "file://" + m3t_data_path.as_posix(),
                     "mesh.scale": 1.0,
-                    "mesh.color_overwrite": [1.0, 0.3, 0.3, 0.2],
+                    "mesh.color_overwrite": color,
                 }
             ],
         )
-        for namespace in ["happypose", "m3t_tracker", "m3t_tracker/filtered"]
+        for namespace, color in [
+            ("happypose", [1.0, 1.0, 1.0, 0.1]),
+            ("m3t_tracker", [1.0, 0.3, 0.3, 0.2]),
+            ("m3t_tracker/filtered", [0.3, 1.0, 0.3, 0.2]),
+        ]
     ]
 
     # Start RViz2 ROS node

@@ -40,6 +40,8 @@ class TranslationFilter:
         self._max_delta_angle = max_delta_angle
         self._max_delta_distance = max_delta_distance
 
+        self._filtered = None
+
         self._buffer = deque(maxlen=max_buffer_size)
 
     def update_params(
@@ -119,21 +121,26 @@ class TranslationFilter:
             if relative_distance > max_relative_distance:
                 max_relative_distance = relative_distance
 
-        if not np.rad2deg(max_relative_angle) < self._max_delta_distance:
+        if not max_relative_angle < self._max_delta_distance:
             raise TranslationFilterException("Relative angle is too big.")
 
         if not max_relative_distance < self._max_delta_angle:
             raise TranslationFilterException("Relative distance is too big.")
 
+        if self._filtered is None:
+            self._filtered = self._buffer[-2]
+
         # Compute smoothing of the translation
         tx = self._buffer[-1].translation
-        ty = self._buffer[-2].translation
+        ty = self._filtered.translation
         # alpha * tx + (1 - alpha) * ty
         tf = self._alpha_t * tx + (1.0 - self._alpha_t) * ty
 
         # Use slerp to smooth rotation
         Rx = self._buffer[-1].rotation
-        Ry = self._buffer[-2].rotation
+        Ry = self._filtered.rotation
         Rf = Ry @ pin.exp3(pin.log3(Ry.T @ Rx) * self._alpha_o)
 
-        return pin.SE3(Rf, tf)
+        self._filtered = pin.SE3(Rf, tf)
+
+        return self._filtered

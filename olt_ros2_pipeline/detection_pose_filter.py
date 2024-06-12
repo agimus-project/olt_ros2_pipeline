@@ -77,10 +77,10 @@ class DetectionPoseFilter(Node):
         if self._param_listener.is_old(self._params):
             self._param_listener.refresh_dynamic_parameters()
             self._params = self._param_listener.get_params()
-            for filter in self._buffer.values():
+            for filter in self._filtered_tracks.values():
                 filter.update_params(
-                    self._params.min_buffer_size,
-                    self._params.max_buffer_size,
+                    self._params.buffer_size.min,
+                    self._params.buffer_size.max,
                     self._params.alpha_t,
                     self._params.alpha_o,
                     self._params.max_delta_angle,
@@ -98,8 +98,8 @@ class DetectionPoseFilter(Node):
             # If track id was unknown, register it
             if detection.id not in self._filtered_tracks:
                 self._filtered_tracks[detection.id] = TranslationFilter(
-                    self._params.min_buffer_size,
-                    self._params.max_buffer_size,
+                    self._params.buffer_size.min,
+                    self._params.buffer_size.max,
                     self._params.alpha_t,
                     self._params.alpha_o,
                     self._params.max_delta_angle,
@@ -144,6 +144,8 @@ class DetectionPoseFilter(Node):
                 position=Point(**dict(zip("xyz", pose_vec[:3]))),
                 orientation=Quaternion(**dict(zip("xyzw", pose_vec[3:]))),
             )
+
+            filtered_detections.detections.append(filtered_detection)
 
         self._detection_pub.publish(filtered_detections)
         self._vision_info_pub.publish(vision_info)

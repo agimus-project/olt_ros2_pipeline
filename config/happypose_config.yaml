@@ -1,7 +1,7 @@
 ---
 /**:
   ros__parameters:
-    device: cpu
+    device: cuda:0
     visualization.publish_markers: false
     verbose_info_logs: true
 
