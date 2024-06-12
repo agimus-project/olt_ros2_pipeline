@@ -3,7 +3,7 @@
 <package format="3">
   <name>olt_ros2_pipeline</name>
   <version>0.0.0</version>
-  <description>Examples for m3t_tracker_ros package</description>
+  <description>ROS 2 reimplementation of Object Localization and Tracking vision pipeline.</description>
   <author email="krzysztof.wojciechowski@laas.fr">Krzysztof Wojciechowski</author>
   <maintainer email="guilhem.saurel@laas.fr">Guilhem Saurel</maintainer>
   <license>BSD</license>

@@ -2,7 +2,14 @@ import os
 from glob import glob
 from setuptools import find_packages, setup
 
+from generate_parameter_library_py.setup_helper import generate_parameter_module
+
 package_name = "olt_ros2_pipeline"
+
+module_name = "detection_filter_parameters"
+yaml_file = "olt_ros2_pipeline/detection_filter_parameters.yaml"
+generate_parameter_module(module_name, yaml_file)
+
 
 setup(
     name=package_name,
@@ -15,22 +22,22 @@ setup(
         ),
         (
             "share/ament_index/resource_index/packages",
-            ["resource/keyboard_monitor"],
+            ["resource/happypose_labeler"],
         ),
         (
             "share/ament_index/resource_index/packages",
             ["resource/detection_filter"],
         ),
         ("share/" + package_name, ["package.xml"]),
-        (os.path.join("share", package_name, "config"), glob("config/*.yaml")),
+        # (os.path.join("share", package_name, "config"), glob("config/*.yaml")),
         (os.path.join("share", package_name, "launch"), glob("launch/*.launch.py")),
-        (os.path.join("share", package_name, "rviz"), glob("rviz/*.rviz")),
+        # (os.path.join("share", package_name, "rviz"), glob("rviz/*.rviz")),
     ],
     install_requires=["setuptools"],
     zip_safe=True,
     maintainer="Guilhem Saurel",
     maintainer_email="guilhem.saurel@laas.fr",
-    description="Examples for m3t_tracker_ros package",
+    description="ROS 2 reimplementation of Object Localization and Tracking vision pipeline.",
     license="BSD",
     tests_require=["pytest"],
     entry_points={

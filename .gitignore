@@ -18,5 +18,5 @@ AMENT_IGNORE
 
 # Generated ROS parameters
 # The file has to be manually modified as the code generations has a bug in __map
-m3t_tracker_ros/m3t_tracker_ros/m3t_tracker_ros_parameters.py
-m3t_tracker_ros/test/__pycache__
+olt_ros2_pipeline/detection_filter_parameters.py
+test/__pycache__
