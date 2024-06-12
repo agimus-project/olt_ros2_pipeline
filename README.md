@@ -2,6 +2,26 @@
 
 ROS 2 reimplementation of Object Localization and Tracking vision pipeline.
 
+## Build instructions
+
+:warning: Conda installation is not supported
+
+Currently, there is no automated build for m3t_tracker and HappyPose libraries itself built into the ROS node.
+
+:warning: As a prerequirement user has to build the [pym3t](https://github.com/agimus-project/pym3t) from source!
+
+:warning: As a prerequirement user has to build the [happypose](https://github.com/agimus-project/happypose) from source!
+
+```bash
+# Optional dependencies used by examples. Awaits ROS Humble sync with new features
+vcs import src < src/olt_ros2_pipeline/deps.repos
+
+rosdep update --rosdistro $ROS_DISTRO
+rosdep install -y -i --from-paths src --rosdistro $ROS_DISTRO
+# parameter --symlink-install is optional
+colcon build --symlink-install
+```
+
 ## ROS API
 
 ### happypose_labeler
