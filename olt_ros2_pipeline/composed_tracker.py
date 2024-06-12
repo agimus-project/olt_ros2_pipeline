@@ -3,7 +3,7 @@ import sys
 import rclpy
 from rclpy.executors import ExternalShutdownException, MultiThreadedExecutor
 
-from olt_ros2_pipeline.detection_filter import DetectionFilter
+from olt_ros2_pipeline.olt_ros2_pipeline.detection_pose_filter import DetectionFilter
 from olt_ros2_pipeline.happypose_labeler import HappyposeLabeler
 
 from m3t_tracker_ros.real_time_tracker_node import RealTimeTrackerNode
@@ -11,7 +11,7 @@ from m3t_tracker_ros.time_catchup_node import TimeCatchupNode
 
 
 def main() -> None:
-    """Creates the ROS node object and spins it."""
+    """Creates the multi threaded executor and adds all expected nodes to it."""
     rclpy.init()
     try:
         real_time_tracker_node = RealTimeTrackerNode()

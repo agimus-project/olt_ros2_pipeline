@@ -6,8 +6,8 @@ from generate_parameter_library_py.setup_helper import generate_parameter_module
 
 package_name = "olt_ros2_pipeline"
 
-module_name = "detection_filter_parameters"
-yaml_file = "olt_ros2_pipeline/detection_filter_parameters.yaml"
+module_name = "detection_pose_filter_parameters"
+yaml_file = "olt_ros2_pipeline/detection_pose_filter_parameters.yaml"
 generate_parameter_module(module_name, yaml_file)
 
 
@@ -26,7 +26,7 @@ setup(
         ),
         (
             "share/ament_index/resource_index/packages",
-            ["resource/detection_filter"],
+            ["resource/detection_pose_filter"],
         ),
         ("share/" + package_name, ["package.xml"]),
         # (os.path.join("share", package_name, "config"), glob("config/*.yaml")),
@@ -44,7 +44,7 @@ setup(
         "console_scripts": [
             "composed_tracker = olt_ros2_pipeline.composed_tracker:main",
             "keyboard_monitor = olt_ros2_pipeline.keyboard_monitor:main",
-            "detection_filter = olt_ros2_pipeline.detection_filter:main",
+            "detection_pose_filter = olt_ros2_pipeline.detection_pose_filter:main",
         ],
     },
 )

@@ -9,18 +9,28 @@ from message_filters import ApproximateTimeSynchronizer, Subscriber
 from geometry_msgs.msg import Point, Pose, Quaternion
 from vision_msgs.msg import Detection2DArray, VisionInfo
 
-from olt_ros2_pipeline.translation_filer import TranslationFilter
+from olt_ros2_pipeline.translation_filer import (
+    TranslationFilter,
+    TranslationFilterException,
+)
 
 # Automatically generated file
-from olt_ros2_pipeline.detection_filter_parameters import detection_filter  # noqa: E402
+from olt_ros2_pipeline.detection_pose_filter_parameters import (
+    detection_pose_filter,
+)  # noqa: E402
 
 
-class DetectionFilter(Node):
-    def __init__(self):
-        super().__init__("detection_filter")
+class DetectionPoseFilter(Node):
+    """ROS node ensuring there is no pose flickering between consecutive detections."""
+
+    def __init__(self, *args, **kwargs):
+        """Initializes ROS node. Creates subscribers and publishers."""
+        # Get the node name. If not set, default to ``detection_pose_filter``
+        node_name = kwargs.pop("node_name", "detection_pose_filter")
+        super().__init__(node_name, *args, **kwargs)
 
         try:
-            self._param_listener = detection_filter.ParamListener(self)
+            self._param_listener = detection_pose_filter.ParamListener(self)
             self._params = self._param_listener.get_params()
         except Exception as e:
             self.get_logger().error(str(e))
@@ -32,8 +42,8 @@ class DetectionFilter(Node):
         # Detections subscribers
         detection_approx_time_sync = ApproximateTimeSynchronizer(
             [
-                Subscriber(self, Detection2DArray, "reference/detections"),
-                Subscriber(self, VisionInfo, "reference/vision_info"),
+                Subscriber(self, Detection2DArray, "unfiltered/detections"),
+                Subscriber(self, VisionInfo, "unfiltered/vision_info"),
             ],
             queue_size=5,
             slop=0.01,
@@ -51,17 +61,6 @@ class DetectionFilter(Node):
 
         self.get_logger().info("Node initialized.")
 
-    def _update_params(self) -> None:
-        for filter in self._buffer.values():
-            filter.update_params(
-                self._params.min_buffer_size,
-                self._params.max_buffer_size,
-                self._params.alpha_t,
-                self._params.alpha_o,
-                self._params.max_delta_angle,
-                self._params.max_delta_distance,
-            )
-
     def _detection_data_cb(
         self, detections: Detection2DArray, vision_info: VisionInfo
     ) -> None:
@@ -74,6 +73,19 @@ class DetectionFilter(Node):
         :param detections: Received vision info message.
         :type detections: vision_msgs.msg.VisionInfo
         """
+        # Update parameters
+        if self._param_listener.is_old(self._params):
+            self._param_listener.refresh_dynamic_parameters()
+            self._params = self._param_listener.get_params()
+            for filter in self._buffer.values():
+                filter.update_params(
+                    self._params.min_buffer_size,
+                    self._params.max_buffer_size,
+                    self._params.alpha_t,
+                    self._params.alpha_o,
+                    self._params.max_delta_angle,
+                    self._params.max_delta_distance,
+                )
 
         # Create new output list of detections
         filtered_detections = Detection2DArray()
@@ -93,6 +105,10 @@ class DetectionFilter(Node):
                     self._params.max_delta_angle,
                     self._params.max_delta_distance,
                 )
+                self.get_logger().info(
+                    f"New track registered with id: '{detection.id}'"
+                )
+
             # Convert ROS message for the pinocchio SE3
             p = detection.results[0].pose.pose
             pose = pin.XYZQUATToSE3(
@@ -109,10 +125,18 @@ class DetectionFilter(Node):
                 )
             )
             # Apply filtering
-            filtered = self._filtered_tracks[detection.id](pose)
-            # If pose was rejected
-            if filtered is None:
+            if not self._filtered_tracks[detection.id].add_pose(pose):
                 continue
+
+            try:
+                filtered = self._filtered_tracks[detection.id].get_filtered()
+            except TranslationFilterException as err:
+                self.get_logger().warn(
+                    f"Pose of the object with id '{detection.id}' "
+                    f"had filtering error: '{str(err)}'"
+                )
+                continue
+
             # Recover ROS message from pinocchio type
             filtered_detection = detection
             pose_vec = pin.SE3ToXYZQUAT(filtered)
@@ -127,9 +151,9 @@ class DetectionFilter(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    detection_filter = DetectionFilter()
-    rclpy.spin(detection_filter)
-    detection_filter.destroy_node()
+    detection_pose_filter = DetectionPoseFilter()
+    rclpy.spin(detection_pose_filter)
+    detection_pose_filter.destroy_node()
     rclpy.try_shutdown()
 
 

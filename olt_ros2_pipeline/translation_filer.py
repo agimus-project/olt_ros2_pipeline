@@ -1,6 +1,12 @@
-import pinocchio as pin
-import numpy as np
 from collections import deque
+import numpy as np
+import pinocchio as pin
+
+
+class TranslationFilterException(Exception):
+    """Custom exception used to handle too big translations."""
+
+    pass
 
 
 class TranslationFilter:
@@ -13,6 +19,21 @@ class TranslationFilter:
         max_delta_angle: float,
         max_delta_distance: float,
     ) -> None:
+        """Initializes Translation filter class.
+
+        :param min_buffer_size: Minimum number od poses to start checking pose consistency.
+        :type min_buffer_size: int
+        :param max_buffer_size: Maximum size of pose buffer.
+        :type max_buffer_size: int
+        :param alpha_t: First order filter coefficient for translation pose.
+        :type alpha_t: float
+        :param alpha_o: First order filter coefficient for translation rotation.
+        :type alpha_o: float
+        :param max_delta_angle: Maximum angle difference between detections.
+        :type max_delta_angle: float
+        :param max_delta_distance: Maximum pose difference between detections.
+        :type max_delta_distance: float
+        """
         self._min_buffer_size = min_buffer_size
         self._alpha_t = alpha_t
         self._alpha_o = alpha_o
@@ -30,6 +51,21 @@ class TranslationFilter:
         new_max_delta_angle: float,
         new_max_delta_distance: float,
     ) -> None:
+        """Dynamically updates parameters of the filer.
+
+        :param new_min_buffer_size: Minimum number od poses to start checking pose consistency.
+        :type new_min_buffer_size: int
+        :param new_max_buffer_size: Maximum size of pose buffer.
+        :type new_max_buffer_size: int
+        :param new_alpha_t: First order filter coefficient for translation pose.
+        :type new_alpha_t: float
+        :param new_alpha_o: First order filter coefficient for translation rotation.
+        :type new_alpha_o: float
+        :param new_max_delta_angle: Maximum angle difference between detections.
+        :type new_max_delta_angle: float
+        :param new_max_delta_distance: Maximum pose difference between detections.
+        :type new_max_delta_distance: float
+        """
         self._min_buffer_size = new_min_buffer_size
         self._alpha_t = new_alpha_t
         self._alpha_o = new_alpha_o
@@ -44,43 +80,60 @@ class TranslationFilter:
 
         self._buffer = new_buff
 
-    def __call__(self, pose: pin.SE3) -> pin.SE3 | None:
+    def add_pose(self, pose: pin.SE3) -> bool:
+        """Adds new pose to the cyclic buffer.
+
+        :param pose: Pose to add to the buffer.
+        :type pose: pin.SE3
+        :return: Indication whether number of detections in the buffer passed minimum.
+        :rtype: bool
+        """
         self._buffer.append(pose)
+        return len(self._buffer) >= self._min_buffer_size
 
+    def get_filtered(self) -> pin.SE3:
+        """Ensures pose of the tracked object is not flickering too much. If pose is
+        valid, performs firs order filtering.
+
+        :raises RuntimeError: Not enough samples in the buffer.
+        :raises TranslationFilterException: Relative distance between poses exceeded threshold.
+        :raises TranslationFilterException: Relative rotation between poses exceeded threshold.
+        :return: Filtered pose of the tracked object.
+        :rtype: pin.SE3
+        """
         if len(self._buffer) < self._min_buffer_size:
-            return None
+            raise RuntimeError("Not enough observations to perform validation!")
 
-        max_rel_angle = 0.0
-        max_rel_distance = 0.0
+        # Maximum recorded difference between two consecutive frames.
+        max_relative_angle = 0.0
+        max_relative_distance = 0.0
         for i in range(1, len(self._buffer)):
-            T_co_1 = self._buffer[i - 1]
-            T_co_2 = self._buffer[i]
-            T_o1_o2 = T_co_1.inverse() * T_co_2
-            rel_angle_o1_o2 = np.linalg.norm(pin.log(T_o1_o2.rotation))
-            rel_distance_o1_o2 = np.linalg.norm(T_o1_o2.translation)
-            if rel_angle_o1_o2 > max_rel_angle:
-                max_rel_angle = rel_angle_o1_o2
-            if rel_distance_o1_o2 > max_rel_distance:
-                max_rel_distance = rel_distance_o1_o2
+            # Compute difference of two poses
+            pose_diff = self._buffer[i - 1].inverse() * self._buffer[i]
+            # Find distance and rotation corresponding to the difference
+            relative_angle = np.linalg.norm(pin.log(pose_diff.rotation))
+            relative_distance = np.linalg.norm(pose_diff.translation)
+            # If this difference is bigger than old maximum, set is as a new maximum
+            if relative_angle > max_relative_angle:
+                max_relative_angle = relative_angle
+            if relative_distance > max_relative_distance:
+                max_relative_distance = relative_distance
 
-        is_valid_rel_angle = np.rad2deg(max_rel_angle) < self._max_delta_distance
-        is_valid_rel_distance = max_rel_distance < self._max_delta_angle
+        if not np.rad2deg(max_relative_angle) < self._max_delta_distance:
+            raise TranslationFilterException("Relative angle is too big.")
 
-        if not is_valid_rel_angle or not is_valid_rel_distance:
-            return None
+        if not max_relative_distance < self._max_delta_angle:
+            raise TranslationFilterException("Relative distance is too big.")
 
-        Tx = self._buffer[-1]
-        Ty = self._buffer[-2]
+        # Compute smoothing of the translation
+        tx = self._buffer[-1].translation
+        ty = self._buffer[-2].translation
+        # alpha * tx + (1 - alpha) * ty
+        tf = self._alpha_t * tx + (1.0 - self._alpha_t) * ty
 
-        # Simple for translation
-        tx, ty = Tx.translation, Ty.translation
-        tf = self._alpha_t * tx + (1 - self._alpha_t) * ty
-
-        # For orientation, implement filtering as slerp
-        Rx, Ry = Tx.rotation, Ty.rotation
-        # proof reading slerp formula:
-        # - alpha_o = 0 (maximum filtering) -> Rf=Ry
-        # - alpha_o = 1 (zero filtering) -> Rf=Rx
+        # Use slerp to smooth rotation
+        Rx = self._buffer[-1].rotation
+        Ry = self._buffer[-2].rotation
         Rf = Ry @ pin.exp3(pin.log3(Ry.T @ Rx) * self._alpha_o)
 
         return pin.SE3(Rf, tf)

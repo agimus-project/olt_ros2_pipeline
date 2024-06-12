@@ -1,5 +1,5 @@
 ---
-detection_filter:
+detection_pose_filter:
   buffer_size:
     min:
       type: int
