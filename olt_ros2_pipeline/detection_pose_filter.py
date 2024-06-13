@@ -117,51 +117,53 @@ class DetectionPoseFilter(Node):
                 self.get_logger().info(
                     f"New track registered with id: '{detection.id}'"
                 )
-
-            transform = self._buffer.lookup_transform(
-                detection.header.frame_id,
-                self._params.frame_id,
-                Time.from_msg(detection.header.stamp),
-            )
-            # Transform pose to a static frame
-            p = do_transform_pose(detection.results[0].pose.pose, transform)
-            # Convert ROS message for the pinocchio SE3
-            pose = pin.XYZQUATToSE3(
-                np.array(
-                    [
-                        p.position.x,
-                        p.position.y,
-                        p.position.z,
-                        p.orientation.x,
-                        p.orientation.y,
-                        p.orientation.z,
-                        p.orientation.w,
-                    ]
-                )
-            )
-            # Apply filtering
-            if not self._filtered_tracks[detection.id].add_pose(pose):
-                continue
-
             try:
-                filtered = self._filtered_tracks[detection.id].get_filtered()
-            except TranslationFilterException as err:
-                self.get_logger().warn(
-                    f"Pose of the object with id '{detection.id}' "
-                    f"had filtering error: '{str(err)}'"
+                transform = self._buffer.lookup_transform(
+                    self._params.frame_id,
+                    detection.header.frame_id,
+                    Time.from_msg(detection.header.stamp),
                 )
-                continue
+                # Transform pose to a static frame
+                p = do_transform_pose(detection.results[0].pose.pose, transform)
+                # Convert ROS message for the pinocchio SE3
+                pose = pin.XYZQUATToSE3(
+                    np.array(
+                        [
+                            p.position.x,
+                            p.position.y,
+                            p.position.z,
+                            p.orientation.x,
+                            p.orientation.y,
+                            p.orientation.z,
+                            p.orientation.w,
+                        ]
+                    )
+                )
+                # Apply filtering
+                if not self._filtered_tracks[detection.id].add_pose(pose):
+                    continue
 
-            # Recover ROS message from pinocchio type
-            filtered_detection = detection
-            filtered_detection.header.frame_if = self._params.frame_id
-            pose_vec = pin.SE3ToXYZQUAT(filtered)
-            filtered_detection.results[0].pose.pose = Pose(
-                position=Point(**dict(zip("xyz", pose_vec[:3]))),
-                orientation=Quaternion(**dict(zip("xyzw", pose_vec[3:]))),
-            )
+                try:
+                    filtered = self._filtered_tracks[detection.id].get_filtered()
+                except TranslationFilterException as err:
+                    self.get_logger().warn(
+                        f"Pose of the object with id '{detection.id}' "
+                        f"had filtering error: '{str(err)}'"
+                    )
+                    continue
 
-            filtered_detections.detections.append(filtered_detection)
+                # Recover ROS message from pinocchio type
+                filtered_detection = detection
+                filtered_detection.header.frame_id = self._params.frame_id
+                pose_vec = pin.SE3ToXYZQUAT(filtered)
+                filtered_detection.results[0].pose.pose = Pose(
+                    position=Point(**dict(zip("xyz", pose_vec[:3]))),
+                    orientation=Quaternion(**dict(zip("xyzw", pose_vec[3:]))),
+                )
+
+                filtered_detections.detections.append(filtered_detection)
+            except Exception as err:
+                self.get_logger().warn(f"Got exception: '{str(err)}'.")
 
         self._detection_pub.publish(filtered_detections)
         self._vision_info_pub.publish(vision_info)
