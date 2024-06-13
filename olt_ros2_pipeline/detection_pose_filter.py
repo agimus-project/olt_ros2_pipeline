@@ -46,7 +46,7 @@ class DetectionPoseFilter(Node):
 
         # Transform buffers
         self._buffer = Buffer()
-        self._listener = TransformListener(self._buffer, self)
+        self._listener = TransformListener(self._buffer, self, spin_thread=True)
 
         # Detections subscribers
         detection_approx_time_sync = ApproximateTimeSynchronizer(
