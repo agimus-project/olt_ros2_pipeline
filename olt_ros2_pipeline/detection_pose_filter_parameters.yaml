@@ -1,6 +1,13 @@
 ---
 detection_pose_filter:
-  frame_id:
+  filtering_frame_id:
+    type: string
+    default_value: world
+    description: Stationary frame in which object poses are filtered.
+    validation:
+      not_empty<>: []
+
+  tracking_frame_id:
     type: string
     default_value: world
     description: Stationary frame in which object poses are filtered.

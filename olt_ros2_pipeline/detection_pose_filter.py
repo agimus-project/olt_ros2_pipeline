@@ -11,7 +11,8 @@ from tf2_ros.buffer import Buffer
 from tf2_ros.transform_listener import TransformListener
 from tf2_geometry_msgs import do_transform_pose
 
-from geometry_msgs.msg import Point, Pose, Quaternion
+from geometry_msgs.msg import Point, Pose, PoseStamped, Quaternion
+from std_msgs.msg import Header, String
 from vision_msgs.msg import Detection2DArray, VisionInfo
 
 from olt_ros2_pipeline.translation_filer import (
@@ -67,8 +68,18 @@ class DetectionPoseFilter(Node):
         self._vision_info_pub = self.create_publisher(
             VisionInfo, "filtered/vision_info", 10
         )
+        self._track_pub = self.create_publisher(PoseStamped, "filtered/track", 10)
+
+        # Subscribers
+        self._filtered_track_id = ""
+        self._track_id_sub = self.create_subscription(
+            String, "set_filter_track", self._set_track_cb, 10
+        )
 
         self.get_logger().info("Node initialized.")
+
+    def _set_track_cb(self, msg: String) -> None:
+        self._filtered_track_id = msg.data
 
     def _detection_data_cb(
         self, detections: Detection2DArray, vision_info: VisionInfo
@@ -99,7 +110,7 @@ class DetectionPoseFilter(Node):
         # Create new output list of detections
         filtered_detections = Detection2DArray()
         filtered_detections.header.stamp = self.get_clock().now().to_msg()
-        filtered_detections.header.frame_id = self._params.frame_id
+        filtered_detections.header.frame_id = self._params.filtering_frame_id
 
         # Add postfix to the method
         vision_info.method += "-smoothed"
@@ -119,7 +130,7 @@ class DetectionPoseFilter(Node):
                 )
             try:
                 transform = self._buffer.lookup_transform(
-                    self._params.frame_id,
+                    self._params.filtering_frame_id,
                     detection.header.frame_id,
                     Time.from_msg(detection.header.stamp),
                 )
@@ -154,7 +165,7 @@ class DetectionPoseFilter(Node):
 
                 # Recover ROS message from pinocchio type
                 filtered_detection = detection
-                filtered_detection.header.frame_id = self._params.frame_id
+                filtered_detection.header.frame_id = self._params.filtering_frame_id
                 pose_vec = pin.SE3ToXYZQUAT(filtered)
                 filtered_detection.results[0].pose.pose = Pose(
                     position=Point(**dict(zip("xyz", pose_vec[:3]))),
@@ -167,6 +178,34 @@ class DetectionPoseFilter(Node):
 
         self._detection_pub.publish(filtered_detections)
         self._vision_info_pub.publish(vision_info)
+
+        try:
+            filtered_detection = next(
+                filter(
+                    lambda detection: detection.id == self._filtered_track_id,
+                    filtered_detections,
+                )
+            )
+            transform = self._buffer.lookup_transform(
+                self._params.tracking_frame_id,
+                filtered_detection.header.frame_id,
+                Time.from_msg(filtered_detection.header.stamp),
+            )
+            self._track_pub.publish(
+                PoseStamped(
+                    header=Header(
+                        frame_id=self._params.tracking_frame_id,
+                        stamp=filtered_detection.header.stamp,
+                    ),
+                    pose=do_transform_pose(
+                        filtered_detection.results[0].pose.pose, transform
+                    ),
+                )
+            )
+        except Exception as err:
+            self.get_logger().warn(
+                f"Failed to obtain tracked pose. Reason: '{str(err)}'."
+            )
 
 
 def main(args=None):

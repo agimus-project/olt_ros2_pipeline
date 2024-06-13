@@ -1,4 +1,5 @@
 import pathlib
+from math import radians
 
 from launch import LaunchDescription
 from launch.actions import (
@@ -38,6 +39,14 @@ def launch_setup(
         package="olt_ros2_pipeline",
         executable="detection_pose_filter",
         name="detection_pose_filter_node",
+        parameters=[
+            {
+                "filtering_frame_id": "world",
+                "tracking_frame_id": "camera_color_optical_frame",
+                "alpha_t": 0.05,
+                "alpha_o": radians(15.0),
+            }
+        ],
         remappings=[
             ("/unfiltered/detections", "/m3t_tracker/detections"),
             ("/unfiltered/vision_info", "/m3t_tracker/vision_info"),
