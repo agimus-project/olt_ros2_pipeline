@@ -60,6 +60,9 @@ class HappyposeLabeler(Node):
             detections.detections[i].id = f"{class_id}_{object_types[class_id]}"
             object_types[class_id] += 1
 
+        detections.header.stamp = self.get_clock().now().to_msg()
+        vision_info.header.stamp = detections.header.stamp
+
         # Publish modified data
         self._detection_pub.publish(detections)
         self._vision_info_pub.publish(vision_info)
