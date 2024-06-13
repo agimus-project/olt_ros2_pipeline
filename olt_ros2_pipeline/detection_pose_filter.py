@@ -97,8 +97,8 @@ class DetectionPoseFilter(Node):
         if self._param_listener.is_old(self._params):
             self._param_listener.refresh_dynamic_parameters()
             self._params = self._param_listener.get_params()
-            for filter in self._filtered_tracks.values():
-                filter.update_params(
+            for track_filter in self._filtered_tracks.values():
+                track_filter.update_params(
                     self._params.buffer_size.min,
                     self._params.buffer_size.max,
                     self._params.alpha_t,
@@ -183,7 +183,7 @@ class DetectionPoseFilter(Node):
             filtered_detection = next(
                 filter(
                     lambda detection: detection.id == self._filtered_track_id,
-                    filtered_detections,
+                    filtered_detections.detections,
                 )
             )
             transform = self._buffer.lookup_transform(
