@@ -204,7 +204,8 @@ class DetectionPoseFilter(Node):
             )
         except Exception as err:
             self.get_logger().warn(
-                f"Failed to obtain tracked pose. Reason: '{str(err)}'."
+                f"Failed to obtain tracked pose. Reason: '{str(err)}'.",
+                throttle_duration_sec=5.0,
             )
 
 
