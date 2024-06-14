@@ -29,7 +29,7 @@ from olt_ros2_pipeline.detection_pose_filter_parameters import (
 class DetectionPoseFilter(Node):
     """ROS node ensuring there is no pose flickering between consecutive detections."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, spin_tf_in_thread: bool = True, *args, **kwargs) -> None:
         """Initializes ROS node. Creates subscribers and publishers."""
         # Get the node name. If not set, default to ``detection_pose_filter``
         node_name = kwargs.pop("node_name", "detection_pose_filter")
@@ -47,7 +47,9 @@ class DetectionPoseFilter(Node):
 
         # Transform buffers
         self._buffer = Buffer()
-        self._listener = TransformListener(self._buffer, self, spin_thread=True)
+        self._listener = TransformListener(
+            self._buffer, self, spin_thread=spin_tf_in_thread
+        )
 
         # Detections subscribers
         detection_approx_time_sync = ApproximateTimeSynchronizer(
