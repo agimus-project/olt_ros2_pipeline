@@ -43,8 +43,10 @@ def launch_setup(
             {
                 "filtering_frame_id": "world",
                 "tracking_frame_id": "camera_color_optical_frame",
-                "alpha_t": 0.05,
-                "alpha_o": radians(15.0),
+                "max_delta_distance": 0.05,
+                "max_delta_angle": radians(25.0),
+                "alpha_t": 0.95,
+                "alpha_o": 0.95,
             }
         ],
         remappings=[
@@ -111,9 +113,10 @@ def launch_setup(
             ],
         )
         for namespace, color in [
-            ("happypose", [1.0, 1.0, 1.0, 0.1]),
-            ("m3t_tracker", [1.0, 0.3, 0.3, 0.2]),
-            ("m3t_tracker/filtered", [0.3, 1.0, 0.3, 0.2]),
+            ("happypose", [1.0, 1.0, 1.0, 1.0]),
+            ("catchup", [0.3, 0.3, 1.0, 1.0]),
+            ("m3t_tracker", [1.0, 0.3, 0.3, 1.0]),
+            ("m3t_tracker/filtered", [0.3, 1.0, 0.3, 1.0]),
         ]
     ]
 
@@ -148,8 +151,10 @@ def launch_setup(
             ]
         ),
         launch_arguments={
-            "rgb_camera.profile": "640x480x30",
-            "depth_module.profile": "640x480x30",
+            "rgb_camera.color_profile": "640x480x30",
+            "depth_module.depth_profile": "640x480x30",
+            "camera_namespace": "",
+            "pointcloud.enable": "true",
         }.items(),
     )
 

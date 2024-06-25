@@ -70,7 +70,9 @@ class DetectionPoseFilter(Node):
         self._vision_info_pub = self.create_publisher(
             VisionInfo, "filtered/vision_info", 10
         )
-        self._track_pub = self.create_publisher(PoseStamped, "filtered/track", 10)
+        self._track_pub = self.create_publisher(
+            PoseStamped, "/ctrl_mpc_linearized/pose_camera_object", 10
+        )
 
         # Subscribers
         self._filtered_track_id = ""
@@ -191,7 +193,7 @@ class DetectionPoseFilter(Node):
             transform = self._buffer.lookup_transform(
                 self._params.tracking_frame_id,
                 filtered_detection.header.frame_id,
-                Time.from_msg(filtered_detection.header.stamp),
+                Time(),
             )
             self._track_pub.publish(
                 PoseStamped(
@@ -204,6 +206,8 @@ class DetectionPoseFilter(Node):
                     ),
                 )
             )
+        except StopIteration:
+            pass
         except Exception as err:
             self.get_logger().warn(
                 f"Failed to obtain tracked pose. Reason: '{str(err)}'.",

@@ -123,14 +123,14 @@ class TranslationFilter:
 
         if max_relative_angle > self._max_delta_angle:
             raise TranslationFilterException(
-                f"Relative angle is too big. Got {max_relative_angle}, "
-                f"expected less than {self._max_delta_angle}."
+                "Relative angle is too big. "
+                f"Got {max_relative_angle}, expected less than {self._max_delta_angle}."
             )
 
         if max_relative_distance > self._max_delta_distance:
             raise TranslationFilterException(
-                f"Relative distance is too big. Got {max_relative_distance}, "
-                f"expected less than {self._max_delta_distance}."
+                "Relative distance is too big. "
+                f"Got {max_relative_distance}, expected less than {self._max_delta_distance}."
             )
 
         if self._filtered is None:
