@@ -18,8 +18,8 @@ from launch_ros.substitutions import FindPackageShare
 def launch_setup(
     context: LaunchContext, *args, **kwargs
 ) -> list[LaunchDescriptionEntity]:
-    m3t_data_path = LaunchConfiguration("m3t_data_path")
-    m3t_data_path = pathlib.Path(m3t_data_path.perform(context)).absolute()
+    m3t_data_dir = LaunchConfiguration("m3t_data_dir")
+    m3t_data_dir = pathlib.Path(m3t_data_dir.perform(context)).absolute()
 
     dataset_name = LaunchConfiguration("dataset_name")
     dataset_name = dataset_name.perform(context)
@@ -65,7 +65,7 @@ def launch_setup(
             output="screen",
             parameters=[
                 {
-                    "dataset_path": m3t_data_path.as_posix(),
+                    "dataset_path": m3t_data_dir.as_posix(),
                     "class_id_regex": class_id_regex,
                     "filename_format": "${class_id}.${file_fmt}",
                 },
@@ -106,7 +106,7 @@ def launch_setup(
                     "filename_format": "${class_id}.obj",
                     "marker_lifetime": 4.0,
                     "mesh.use_vision_info_uri": False,
-                    "mesh.uri": "file://" + m3t_data_path.as_posix(),
+                    "mesh.uri": "file://" + m3t_data_dir.as_posix(),
                     "mesh.scale": 1.0,
                     "mesh.color_overwrite": color,
                 }
@@ -176,7 +176,7 @@ def generate_launch_description():
             description="Name of the dataset to be used in the pipeline.",
         ),
         DeclareLaunchArgument(
-            "m3t_data_path",
+            "m3t_data_dir",
             description="Name of the dataset to be used in the pipeline.",
         ),
     ]

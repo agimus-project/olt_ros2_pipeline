@@ -22,6 +22,32 @@ rosdep install -y -i --from-paths src --rosdistro $ROS_DISTRO
 colcon build --symlink-install
 ```
 
+## Launch
+
+:warning: Current pipeline fully supports only YCBV dataset! For TLESS you need to make changes in config files!
+
+First create M3D data:
+```bash
+mkdir /tmp/m3t_data_dir
+ros2 run m3t_tracker_ros prepare_sparse_views \
+    --input-path $HAPPYPOSE_DATA_DIR/bop_datasets/ycbv/models \
+    --output-path /tmp/m3t_data_dir \
+    --use-depth
+```
+
+Then you can start tracking, by first launching HappyPose ROS node:
+```bash
+ros2 launch olt_ros2_pipeline happypose.launch.py dataset_name:=ycbv
+```
+Next in new terminal window launch tracker pipeline:
+```bash
+ros2 launch olt_ros2_pipeline separate_nodes_pipeline.launch.launch.py \
+    dataset_name:=ycbv \
+    m3t_data_dir:=/tmp/m3t_data_dir
+```
+
+Intel RealSense camera node will start publishing images and new RViz2 window will open with preconfigured view.
+
 ## ROS API
 
 ### happypose_labeler
