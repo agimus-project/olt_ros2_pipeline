@@ -3,13 +3,13 @@ import numpy as np
 import pinocchio as pin
 
 
-class TranslationFilterException(Exception):
+class SE3FilterException(Exception):
     """Custom exception used to handle too big translations."""
 
     pass
 
 
-class TranslationFilter:
+class SE3Filter:
     def __init__(
         self,
         min_buffer_size: int,
@@ -19,15 +19,15 @@ class TranslationFilter:
         max_delta_angle: float,
         max_delta_distance: float,
     ) -> None:
-        """Initializes Translation filter class.
+        """Initializes SE3 filter class.
 
         :param min_buffer_size: Minimum number od poses to start checking pose consistency.
         :type min_buffer_size: int
         :param max_buffer_size: Maximum size of pose buffer.
         :type max_buffer_size: int
-        :param alpha_t: First order filter coefficient for translation pose.
+        :param alpha_t: First order filter coefficient for translation.
         :type alpha_t: float
-        :param alpha_o: First order filter coefficient for translation rotation.
+        :param alpha_o: First order filter coefficient for rotation.
         :type alpha_o: float
         :param max_delta_angle: Maximum angle difference between detections.
         :type max_delta_angle: float
@@ -59,9 +59,9 @@ class TranslationFilter:
         :type new_min_buffer_size: int
         :param new_max_buffer_size: Maximum size of pose buffer.
         :type new_max_buffer_size: int
-        :param new_alpha_t: First order filter coefficient for translation pose.
+        :param new_alpha_t: First order filter coefficient for translation.
         :type new_alpha_t: float
-        :param new_alpha_o: First order filter coefficient for translation rotation.
+        :param new_alpha_o: First order filter coefficient for rotation.
         :type new_alpha_o: float
         :param new_max_delta_angle: Maximum angle difference between detections.
         :type new_max_delta_angle: float
@@ -98,8 +98,8 @@ class TranslationFilter:
         valid, performs firs order filtering.
 
         :raises RuntimeError: Not enough samples in the buffer.
-        :raises TranslationFilterException: Relative distance between poses exceeded threshold.
-        :raises TranslationFilterException: Relative rotation between poses exceeded threshold.
+        :raises SE3FilterException: Relative distance between poses exceeded threshold.
+        :raises SE3FilterException: Relative rotation between poses exceeded threshold.
         :return: Filtered pose of the tracked object.
         :rtype: pin.SE3
         """
@@ -122,13 +122,13 @@ class TranslationFilter:
                 max_relative_distance = relative_distance
 
         if max_relative_angle > self._max_delta_angle:
-            raise TranslationFilterException(
+            raise SE3FilterException(
                 f"Relative angle is too big. Got {max_relative_angle}, "
                 f"expected less than {self._max_delta_angle}."
             )
 
         if max_relative_distance > self._max_delta_distance:
-            raise TranslationFilterException(
+            raise SE3FilterException(
                 f"Relative distance is too big. Got {max_relative_distance}, "
                 f"expected less than {self._max_delta_distance}."
             )

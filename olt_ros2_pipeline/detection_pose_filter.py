@@ -15,10 +15,7 @@ from geometry_msgs.msg import Point, Pose, PoseStamped, Quaternion
 from std_msgs.msg import Header, String
 from vision_msgs.msg import Detection2DArray, VisionInfo
 
-from olt_ros2_pipeline.translation_filer import (
-    TranslationFilter,
-    TranslationFilterException,
-)
+from olt_ros2_pipeline.se3_filer import SE3Filter, SE3FilterException
 
 # Automatically generated file
 from olt_ros2_pipeline.detection_pose_filter_parameters import (
@@ -42,7 +39,7 @@ class DetectionPoseFilter(Node):
             self.get_logger().error(str(e))
             raise e
 
-        # dict[str, TranslationFilter]
+        # dict[str, SE3Filter]
         self._filtered_tracks = {}
 
         # Transform buffers
@@ -119,7 +116,7 @@ class DetectionPoseFilter(Node):
         for detection in detections.detections:
             # If track id was unknown, register it
             if detection.id not in self._filtered_tracks:
-                self._filtered_tracks[detection.id] = TranslationFilter(
+                self._filtered_tracks[detection.id] = SE3Filter(
                     self._params.buffer_size.min,
                     self._params.buffer_size.max,
                     self._params.alpha_t,
@@ -158,7 +155,7 @@ class DetectionPoseFilter(Node):
 
                 try:
                     filtered = self._filtered_tracks[detection.id].get_filtered()
-                except TranslationFilterException as err:
+                except SE3FilterException as err:
                     self.get_logger().warn(
                         f"Pose of the object with id '{detection.id}' "
                         f"had filtering error: '{str(err)}'"

@@ -37,11 +37,6 @@ def main(args=None):
     except ExternalShutdownException:
         sys.exit(1)
 
-    happypose_labeler.destroy_node()
-    time_catchup_node.destroy_node()
-    real_time_tracker_node.destroy_node()
-    detection_filter.destroy_node()
-
 
 if __name__ == "__main__":
     main()
