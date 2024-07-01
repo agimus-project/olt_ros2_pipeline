@@ -3,18 +3,19 @@
   ros__parameters:
     # Timing and frames configuration
     # compensate_camera_motion: true
-    # camera_motion_stationary_frame_id: world
+    # camera_motion_stationary_frame_id: panda_link0
     detection_to_image_time_slop: 10.0
     # Tracker configuration
-    optimizer.tikhonov_parameter_rotation: 20000.0
-    optimizer.tikhonov_parameter_translation: 500000.0
+    optimizer.tikhonov_parameter_rotation: 2000.0
+    optimizer.tikhonov_parameter_translation: 50000.0
 
     region_modality.model_occlusion: true
-    region_modality.learning_rate_f: 0.5
-    region_modality.learning_rate_b: 0.5
+    # region_modality.learning_rate_f: 0.5
+    # region_modality.learning_rate_b: 0.5
 
     use_texture_modality: true
     use_depth: true
+    use_depth_modality: true
     # Tracked objects configuration
     tracked_objects:
     - ycbv-obj_000001
@@ -35,7 +36,7 @@
     - ycbv-obj_000016
     - ycbv-obj_000017
     - ycbv-obj_000018
-    - ycbv-obj_000019
+    # - ycbv-obj_000019
     # - ycbv-obj_000020
     # - ycbv-obj_000021
     # - ycbv-obj_000022
@@ -48,7 +49,8 @@
     # - ycbv-obj_000029
     # - ycbv-obj_000030
 
-    # ycbv-obj_000026.max_instances: 2
+    ycbv-obj_000002.max_instances: 1
+    ycbv-obj_000001.max_instances: 1
     # ycbv-obj_000001.max_instances: 5
     # ycbv-obj_000021.max_instances: 5
     # ycbv-obj_000023.max_instances: 5

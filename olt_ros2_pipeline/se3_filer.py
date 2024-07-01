@@ -21,7 +21,7 @@ class SE3Filter:
     ) -> None:
         """Initializes SE3 filter class.
 
-        :param min_buffer_size: Minimum number od poses to start checking pose consistency.
+        :param min_buffer_size: Minimum number of poses to start checking pose consistency.
         :type min_buffer_size: int
         :param max_buffer_size: Maximum size of pose buffer.
         :type max_buffer_size: int
@@ -53,7 +53,7 @@ class SE3Filter:
         new_max_delta_angle: float,
         new_max_delta_distance: float,
     ) -> None:
-        """Dynamically updates parameters of the filer.
+        """Dynamically updates parameters of the filter.
 
         :param new_min_buffer_size: Minimum number od poses to start checking pose consistency.
         :type new_min_buffer_size: int
@@ -123,14 +123,14 @@ class SE3Filter:
 
         if max_relative_angle > self._max_delta_angle:
             raise SE3FilterException(
-                f"Relative angle is too big. Got {max_relative_angle}, "
-                f"expected less than {self._max_delta_angle}."
+                "Relative angle is too big. "
+                f"Got {max_relative_angle}, expected less than {self._max_delta_angle}."
             )
 
         if max_relative_distance > self._max_delta_distance:
             raise SE3FilterException(
-                f"Relative distance is too big. Got {max_relative_distance}, "
-                f"expected less than {self._max_delta_distance}."
+                "Relative distance is too big. "
+                f"Got {max_relative_distance}, expected less than {self._max_delta_distance}."
             )
 
         if self._filtered is None:
