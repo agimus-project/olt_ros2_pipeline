@@ -102,7 +102,7 @@ within error threshold, applies first order smoothing.
 
 ### Service Servers
 
-- **~/set_paramters** [rcl_interfaces/srv/SetParameters]
+- **~/set_parameters** [rcl_interfaces/srv/SetParameters]
 
     Allows to dynamically change ROS parameters. For more information. For more information, refer to the [documentation](https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Parameters/Understanding-ROS2-Parameters.html).
 
