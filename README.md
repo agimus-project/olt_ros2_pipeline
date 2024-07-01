@@ -8,7 +8,7 @@ ROS 2 reimplementation of Object Localization and Tracking vision pipeline.
 
 Currently, there is no automated build for m3t_tracker and HappyPose libraries itself built into the ROS node.
 
-:warning: As a prerequirement user has to build the [pym3t](https://github.com/agimus-project/pym3t) from source!
+:warning: As a prerequirement user has to build the [pym3t](https://github.com/agimus-project/pym3t) package from source!
 
 :warning: As a prerequirement user has to build the [happypose](https://github.com/agimus-project/happypose) from source!
 
