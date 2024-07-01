@@ -21,7 +21,7 @@ class TranslationFilter:
     ) -> None:
         """Initializes Translation filter class.
 
-        :param min_buffer_size: Minimum number od poses to start checking pose consistency.
+        :param min_buffer_size: Minimum number of poses to start checking pose consistency.
         :type min_buffer_size: int
         :param max_buffer_size: Maximum size of pose buffer.
         :type max_buffer_size: int
