@@ -53,7 +53,7 @@ class TranslationFilter:
         new_max_delta_angle: float,
         new_max_delta_distance: float,
     ) -> None:
-        """Dynamically updates parameters of the filer.
+        """Dynamically updates parameters of the filter.
 
         :param new_min_buffer_size: Minimum number od poses to start checking pose consistency.
         :type new_min_buffer_size: int
