@@ -1,14 +1,20 @@
-import os
-from glob import glob
+from pathlib import Path
+from typing import List
+
 from setuptools import find_packages, setup
 
 from generate_parameter_library_py.setup_helper import generate_parameter_module
 
 package_name = "olt_ros2_pipeline"
+project_source_dir = Path(__file__).parent
 
 module_name = "detection_pose_filter_parameters"
 yaml_file = "olt_ros2_pipeline/detection_pose_filter_parameters.yaml"
 generate_parameter_module(module_name, yaml_file)
+
+
+def get_files(dir: Path, pattern: str) -> List[str]:
+    return [x.as_posix() for x in (dir).glob(pattern) if x.is_file()]
 
 
 setup(
@@ -29,9 +35,18 @@ setup(
             ["resource/detection_pose_filter"],
         ),
         ("share/" + package_name, ["package.xml"]),
-        (os.path.join("share", package_name, "config"), glob("config/*.yaml")),
-        (os.path.join("share", package_name, "launch"), glob("launch/*.launch.py")),
-        (os.path.join("share", package_name, "rviz"), glob("rviz/*.rviz")),
+        (
+            f"share/{package_name}/config",
+            get_files(project_source_dir / "config", "*.yaml"),
+        ),
+        (
+            f"share/{package_name}/launch",
+            get_files(project_source_dir / "launch", "*.launch.py"),
+        ),
+        (
+            f"share/{package_name}/rviz",
+            get_files(project_source_dir / "rviz", "*.rviz"),
+        ),
     ],
     install_requires=["setuptools"],
     zip_safe=True,
