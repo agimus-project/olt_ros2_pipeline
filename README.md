@@ -41,7 +41,7 @@ ros2 launch olt_ros2_pipeline happypose.launch.py dataset_name:=ycbv
 ```
 Next in new terminal window launch tracker pipeline:
 ```bash
-ros2 launch olt_ros2_pipeline separate_nodes_pipeline.launch.launch.py \
+ros2 launch olt_ros2_pipeline separate_nodes_pipeline.launch.py \
     dataset_name:=ycbv \
     m3t_data_dir:=/tmp/m3t_data_dir
 ```
