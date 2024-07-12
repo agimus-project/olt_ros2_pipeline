@@ -1,0 +1,24 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.__pycache__
+*.pyc
+
+# C extensions
+*.so
+
+# Linter cache
+.ruff_cache
+
+# Colcon custom files
+COLCON_IGNORE
+AMENT_IGNORE
+
+# VS Code
+.vscode
+
+# Generated ROS parameters
+# The file has to be manually modified as the code generations has a bug in __map
+olt_ros2_pipeline/detection_pose_filter_parameters.py
+test/__pycache__
