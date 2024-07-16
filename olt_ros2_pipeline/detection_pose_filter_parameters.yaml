@@ -14,6 +14,19 @@ detection_pose_filter:
     validation:
       not_empty<>: []
 
+  publish_desired_pose:
+    type: bool
+    default_value: true
+    description: Publishes desired pose for visualization in RViz.
+
+  desired_pose:
+    type: double_array
+    default_value: [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]
+    description: Desired pose treated as a reference to visualize in RViz. Values are in order
+      [x, y, z, qx, qy, qz, qw].
+    validation:
+      fixed_size<>: [7]
+
   buffer_size:
     min:
       type: int

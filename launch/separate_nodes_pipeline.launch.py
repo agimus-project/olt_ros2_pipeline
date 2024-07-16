@@ -47,6 +47,8 @@ def launch_setup(
                 "max_delta_angle": radians(25.0),
                 "alpha_t": 0.95,
                 "alpha_o": 0.95,
+                "publish_desired_pose": True,
+                "desired_pose": [0.2, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
             }
         ],
         remappings=[
