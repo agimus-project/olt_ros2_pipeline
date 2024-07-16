@@ -70,6 +70,8 @@ class DetectionPoseFilter(Node):
         self._track_pub = self.create_publisher(
             PoseStamped, "/ctrl_mpc_linearized/pose_camera_object", 10
         )
+        if self._params.publish_desired_pose:
+            self._desired_pub = self.create_publisher(PoseStamped, "/desired_pose", 10)
 
         # Subscribers
         self._filtered_track_id = ""
@@ -203,6 +205,20 @@ class DetectionPoseFilter(Node):
                     ),
                 )
             )
+            if self._params.publish_desired_pose:
+                data = self._params.desired_pose
+                self._desired_pub.publish(
+                    PoseStamped(
+                        header=Header(
+                            frame_id=self._params.tracking_frame_id,
+                            stamp=filtered_detection.header.stamp,
+                        ),
+                        pose=Pose(
+                            position=Point(**dict(zip("xyz", data[:3]))),
+                            orientation=Quaternion(**dict(zip("xyzw", data[3:]))),
+                        ),
+                    )
+                )
         except StopIteration:
             pass
         except Exception as err:
