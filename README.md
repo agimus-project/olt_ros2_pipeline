@@ -37,7 +37,7 @@ ros2 run m3t_tracker_ros prepare_sparse_views \
 
 Then you can start tracking, by first launching HappyPose ROS node:
 ```bash
-ros2 launch olt_ros2_pipeline happypose.launch.py dataset_name:=ycbv
+ros2 launch olt_ros2_pipeline happypose.launch.py dataset_name:=ycbv model_type:=pbr
 ```
 Next in new terminal window launch tracker pipeline:
 ```bash

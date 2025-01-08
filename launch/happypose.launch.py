@@ -32,9 +32,8 @@ def launch_setup(
             ),
         ],
         remappings=[
-            # Remapped topics have to match the names from
-            # happypose_examples/config/cosypose_params.yaml
-            ("/cam_1/image_color", "/camera/color/image_raw"),
+            # Remapped topics have to match the names from yaml config file
+            ("/cam_1/image_raw", "/camera/color/image_raw"),
             ("/cam_1/camera_info", "/camera/color/camera_info"),
         ],
     )
@@ -48,6 +47,11 @@ def generate_launch_description():
             "dataset_name",
             default_value="tless",
             description="Name of the dataset to be used in the pipeline.",
+        ),
+        DeclareLaunchArgument(
+            "model_type",
+            default_value="pbr",
+            description="Type of neural network model to use. Available 'pbr'|'synth+real'.",
         ),
     ]
 
