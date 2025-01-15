@@ -12,6 +12,10 @@ module_name = "detection_pose_filter_parameters"
 yaml_file = "olt_ros2_pipeline/detection_pose_filter_parameters.yaml"
 generate_parameter_module(module_name, yaml_file)
 
+module_name = "happypose_labeler_parameters"
+yaml_file = "olt_ros2_pipeline/happypose_labeler_parameters.yaml"
+generate_parameter_module(module_name, yaml_file)
+
 
 def get_files(dir: Path, pattern: str) -> List[str]:
     return [x.as_posix() for x in (dir).glob(pattern) if x.is_file()]
@@ -33,6 +37,10 @@ setup(
         (
             "share/ament_index/resource_index/packages",
             ["resource/detection_pose_filter"],
+        ),
+        (
+            "share/ament_index/resource_index/packages",
+            ["resource/track_visualizer"],
         ),
         ("share/" + package_name, ["package.xml"]),
         (
@@ -60,6 +68,7 @@ setup(
             "composed_tracker = olt_ros2_pipeline.composed_tracker:main",
             "happypose_labeler = olt_ros2_pipeline.happypose_labeler:main",
             "detection_pose_filter = olt_ros2_pipeline.detection_pose_filter:main",
+            "track_visualizer = olt_ros2_pipeline.track_visualizer:main",
         ],
     },
 )
