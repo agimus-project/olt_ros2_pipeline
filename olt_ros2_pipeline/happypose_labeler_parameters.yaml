@@ -1,0 +1,41 @@
+---
+happypose_labeler:
+  static_frame:
+    type: string
+    default_value: world
+    description: Stationary frame in which object poses are matched.
+    validation:
+      not_empty<>: []
+  track_max_dist:
+    type: double
+    default_value: 0.05
+    description: Maximum allowed distance to consider detection as a valid candidate to match
+      a track.
+    validation:
+      gt_eq<>: 0.0
+  distance_cost_weight:
+    type: double
+    default_value: 1.0
+    description: Cost weight used to multiply euclidean distance [m] between new detection
+      and track candidate. Used when trying to find new detections that best match known tracks.
+    validation:
+      gt_eq<>: 0.0
+  angle_cost_weight:
+    type: double
+    default_value: 1.0
+    description: Cost weight used to multiply angle difference [rad] between new detection
+      and track candidate. Used when trying to find new detections that best match known tracks.
+    validation:
+      gt_eq<>: 0.0
+  buffer_timeout:
+    type: double
+    default_value: 5.0
+    description: Timeout [s] for tracker detections to be still searchable when matching closest
+      tracks for new unlabeled detection.
+    validation:
+      gt_eq<>: 0.0
+  use_symmetry_minimization:
+    type: bool
+    default_value: true
+    description: Whether to use information about object symmetries to minimize differences
+      between detections.

@@ -74,6 +74,26 @@ ROS node labeling detections by creating simple labels based on combining class_
 
     Vision info message associated with unlabeled detections.
 
+- **upsampled/detections** [vision_msgs/msg/Detection2DArray]
+
+    Upsampled detections from tracker used to match tracks.
+
+- **upsampled/vision_info** [vision_msgs/msg/VisionInfo]
+
+    Upsampled vision info message associated with upsampled detections.
+
+### Service Servers
+
+- **~/set_parameters** [rcl_interfaces/srv/SetParameters]
+
+    Allows to dynamically change ROS parameters. For more information. For more information, refer to the [documentation](https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Parameters/Understanding-ROS2-Parameters.html).
+
+### Parameters
+
+Parameters are generated with [generate_parameter_library](https://github.com/PickNikRobotics/generate_parameter_library). Currently, no automatic documentation generation is set up. Refer to [happypose_labeler_parameters.yaml](./olt_ros2_pipeline/happypose_labeler_parameters.yaml) for more information.
+
+Note that some of the parameters are possible to tune in the runtime. Refer to the code generation YAML file to see which of them are available.
+
 ### detection_pose_filter
 
 ROS node applying basic pose filtering and safety management on top of 6D pose detection pipeline.

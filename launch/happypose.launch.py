@@ -5,7 +5,7 @@ from launch.actions import (
 )
 from launch.launch_context import LaunchContext
 from launch.launch_description_entity import LaunchDescriptionEntity
-from launch.substitutions import PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterFile
 from launch_ros.substitutions import FindPackageShare
@@ -14,12 +14,15 @@ from launch_ros.substitutions import FindPackageShare
 def launch_setup(
     context: LaunchContext, *args, **kwargs
 ) -> list[LaunchDescriptionEntity]:
+    use_sim = LaunchConfiguration("use_sim")
+
     # Start ROS node of happypose
     happypose_node = Node(
         package="happypose_ros",
         executable="happypose_node",
         name="happypose_node",
         parameters=[
+            {"use_sim_time": use_sim},
             ParameterFile(
                 param_file=PathJoinSubstitution(
                     [
@@ -52,6 +55,11 @@ def generate_launch_description():
             "model_type",
             default_value="pbr",
             description="Type of neural network model to use. Available 'pbr'|'synth+real'.",
+        ),
+        DeclareLaunchArgument(
+            "use_sim",
+            default_value="False",
+            description="Enables `use_sim` flag in all nodes. Disables Realsense node.",
         ),
     ]
 
