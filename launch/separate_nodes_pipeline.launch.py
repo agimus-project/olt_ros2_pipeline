@@ -115,7 +115,7 @@ def launch_setup(
 
     marker_publishers = [
         Node(
-            package="happypose_marker_publisher",
+            package="detection2d_marker_publisher",
             executable="marker_publisher",
             namespace=namespace,
             output="screen",
