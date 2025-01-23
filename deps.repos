@@ -1,13 +1,13 @@
 repositories:
-  happypose_marker_publisher:
+  detection2d_marker_publisher:
     type: git
-    url: https://gitlab.laas.fr/kwojciecho/happypose_marker_publisher
-    version: devel
+    url: https://github.com/agimus-project/detection2d_marker_publisher.git
+    version: main
   happypose_ros:
     type: git
     url: https://github.com/agimus-project/happypose_ros
     version: v0.1.0
   m3t_tracker_ros:
     type: git
-    url: https://gitlab.laas.fr/kwojciecho/m3t_tracker_ros
-    version: devel
+    url: https://github.com/agimus-project/m3t_tracker_ros
+    version: main
