@@ -1,7 +1,7 @@
 repositories:
   detection2d_marker_publisher:
     type: git
-    url: https://github.com/agimus-project/detection2d_marker_publisher.git
+    url: https://github.com/agimus-project/detection2d_marker_publisher
     version: main
   happypose_ros:
     type: git
