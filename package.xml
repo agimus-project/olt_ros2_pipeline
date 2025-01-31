@@ -15,7 +15,7 @@
   <exec_depend>m3t_tracker_ros</exec_depend>
   <exec_depend>happypose_ros</exec_depend>
   <exec_depend>happypose_msgs</exec_depend>
-  <exec_depend>happypose_marker_publisher</exec_depend>
+  <exec_depend>detection2d_marker_publisher</exec_depend>
   <exec_depend>realsense2_camera</exec_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>message_filters</exec_depend>
