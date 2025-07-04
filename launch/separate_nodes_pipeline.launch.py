@@ -124,7 +124,7 @@ def launch_setup(
                     "use_sim_time": use_sim,
                     "class_id_regex": class_id_regex,
                     "filename_format": "${class_id}.obj",
-                    "marker_lifetime": 0.3,
+                    "marker_lifetime": 3.0,
                     "mesh.use_vision_info_uri": False,
                     "mesh.uri": "file://" + m3t_data_dir.as_posix(),
                     "mesh.scale": 1.0,
@@ -134,10 +134,10 @@ def launch_setup(
         )
         for namespace, color in [
             ("happypose", [1.0, 1.0, 1.0, 0.6]),
-            ("labeled", [1.0, 1.0, 0.0, 0.6]),
-            ("catchup", [0.3, 0.3, 1.0, 0.6]),
-            ("m3t_tracker", [1.0, 0.3, 0.3, 0.6]),
-            ("m3t_tracker/filtered", [0.3, 1.0, 0.3, 0.6]),
+            # ("labeled", [1.0, 1.0, 0.0, 0.6]),
+            # ("catchup", [0.3, 0.3, 1.0, 0.6]),
+            # ("m3t_tracker", [1.0, 0.3, 0.3, 0.6]),
+            # ("m3t_tracker/filtered", [0.3, 1.0, 0.3, 0.6]),
         ]
     ]
 
@@ -191,7 +191,7 @@ def launch_setup(
                 "use_sim_time": use_sim,
                 "text_color": [0.0, 1.0, 0.0, 1.0],
                 "text_size": 0.025,
-                "marker_lifetime": 0.5,
+                "marker_lifetime": 3.0,
             }
         ],
         remappings=[
@@ -208,7 +208,7 @@ def launch_setup(
         *marker_publishers,
         *trackers,
         rviz_node,
-        realsense2_camera,
+        # realsense2_camera,
         detection_visualizer,
     ]
 
