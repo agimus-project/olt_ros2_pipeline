@@ -48,6 +48,20 @@ ros2 launch olt_ros2_pipeline separate_nodes_pipeline.launch.py \
 
 Intel RealSense camera node will start publishing images and new RViz2 window will open with preconfigured view.
 
+
+## Launch apriltag
+Additionally, for testing purposes, a wrapper around apriltag_ros is proposed. Install additional dependencies:
+
+```
+sudo apt install ros-humble-image-proc ros-humble-apriltag-ros
+```
+
+and launch with 
+
+```
+ros2 launch olt_ros2_pipeline realsense_apriltag.launch.py
+```
+
 ## ROS API
 
 ### happypose_labeler

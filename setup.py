@@ -69,6 +69,7 @@ setup(
             "happypose_labeler = olt_ros2_pipeline.happypose_labeler:main",
             "detection_pose_filter = olt_ros2_pipeline.detection_pose_filter:main",
             "track_visualizer = olt_ros2_pipeline.track_visualizer:main",
+            "apriltag_tf_to_world = olt_ros2_pipeline.apriltag_tf_to_world:main"
         ],
     },
 )
